@@ -279,45 +279,23 @@ public class RatingDialog extends AppCompatDialog implements RatingBar.OnRatingB
         return ratingBar;
     }
 
-    @Override
-    public void show() {
-
-        if (checkIfSessionMatches(session)) {
+    public void showMaybe(int currentSessionNumber) {
+        if (checkIfSessionMatches(currentSessionNumber)) {
             super.show();
         }
     }
 
-    private boolean checkIfSessionMatches(int session) {
-
-        if (session == 1) {
-            return true;
-        }
-
+    public boolean checkIfSessionMatches(int currentSessionNumber) {
         sharedpreferences = context.getSharedPreferences(MyPrefs, Context.MODE_PRIVATE);
-
         if (sharedpreferences.getBoolean(SHOW_NEVER, false)) {
             return false;
         }
 
-        int count = sharedpreferences.getInt(SESSION_COUNT, 1);
-
-        if (session == count) {
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putInt(SESSION_COUNT, 1);
-            editor.commit();
+        if (currentSessionNumber % session == 0) {
             return true;
-        } else if (session > count) {
-            count++;
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putInt(SESSION_COUNT, count);
-            editor.commit();
-            return false;
-        } else {
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putInt(SESSION_COUNT, 2);
-            editor.commit();
-            return false;
         }
+
+        return false;
     }
 
     private void showNever() {
